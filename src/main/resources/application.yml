@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: demo-4-mongodb
+  data:
+    mongodb:
+      uri: mongodb://172.16.30.145:27017/ows
+logging:
+  level: debug
