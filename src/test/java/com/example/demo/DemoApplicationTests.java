@@ -4,8 +4,9 @@ import com.example.demo.db.data.User;
 import com.example.demo.db.data.User1;
 import com.example.demo.db.data.User2;
 import com.example.demo.db.service.SequenceGeneratorService;
-import com.example.demo.db.service.user.UserRepository;
-import com.example.demo.db.service.user.UserService;
+import com.example.demo.db.service.TestService;
+import com.example.demo.db.service.user.mongo.UserRepository;
+import com.example.demo.db.service.user.mongo.MongoUserService;
 import com.example.demo.helper.ReflectionUtils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,9 +31,11 @@ import java.util.Map;
 @SpringBootTest
 public class DemoApplicationTests {
     @Autowired
-    private UserService userDao;
+    private MongoUserService userDao;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TestService testService;
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
 
@@ -164,5 +167,17 @@ public class DemoApplicationTests {
 
         users = userDao.findUserByName("test2");
         System.out.println("users->" + OBJECTMAPPER.writeValueAsString(users));
+    }
+
+    @Test
+    public void TestThrowableTransactional() {
+        // 在用一个事务方法中，如果mysql先出错回滚了，MongoDB执行的代码就不会执行了
+        testService.Error2SaveUser1();
+    }
+
+    @Test
+    public void TestThrowableTransactional2() {
+        // 该方法会造成MongoDB脏数据
+        testService.Error2SaveUser2();
     }
 }

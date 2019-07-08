@@ -1,4 +1,4 @@
-package com.example.demo.db.service.user;
+package com.example.demo.db.service.user.mongo;
 
 import com.example.demo.db.data.User;
 import com.example.demo.db.data.User1;
@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,16 +24,18 @@ import java.util.Map;
  * @description class UserImpl
  */
 @Service
-public class UserService {
+@Transactional
+public class MongoUserService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final MongoTemplate mongoTemplate;
 
     @Autowired
-    public UserService(MongoTemplate mongoTemplate) {
+    public MongoUserService(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
+    @Transactional
     public void save(Object obj) {
         mongoTemplate.save(obj);
     }
