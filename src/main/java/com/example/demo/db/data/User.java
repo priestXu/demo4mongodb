@@ -3,10 +3,12 @@ package com.example.demo.db.data;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,6 +38,9 @@ public class User implements Serializable {
     private String url;
 
     private Map<String, Object> details;
+
+    @DBRef
+    private List<User> parents;
 
     /**
      * 添加扩展属性

@@ -22,10 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -179,5 +176,24 @@ public class DemoApplicationTests {
     public void TestThrowableTransactional2() {
         // 该方法会造成MongoDB脏数据
         testService.Error2SaveUser2();
+    }
+
+    @Test
+    public void TestSaveUserRef() {
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setId(sequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
+        user1.setTitle("父");
+        users.add(user1);
+        User user2 = new User();
+        user2.setId(sequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
+        user2.setTitle("母");
+        users.add(user2);
+        User user3 = new User();
+        user3.setId(sequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
+        user3.setTitle("子");
+        user3.setParents(Arrays.asList(user1, user2));
+        users.add(user3);
+        this.userRepository.save(users);
     }
 }
