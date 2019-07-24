@@ -12,12 +12,18 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
+import com.mongodb.BasicDBObject;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -195,5 +201,19 @@ public class DemoApplicationTests {
         user3.setParents(Arrays.asList(user1, user2));
         users.add(user3);
         this.userRepository.save(users);
+    }
+
+    @Test
+    public void TestFindAllUser() throws JsonProcessingException {
+        List<User> users0 = userRepository.findByDynamicField("details.test2", 123);
+        System.out.println("users0->\r\n" + OBJECTMAPPER.writeValueAsString(users0));
+        User user = new User();
+        user.setDetails(ImmutableMap.of("test2", 123));
+        Example<User> example = Example.of(user, ExampleMatcher.matching()
+                .withMatcher("details.test2", ExampleMatcher.GenericPropertyMatchers.exact()) // 精确查询
+                .withIgnoreNullValues().withIgnorePaths("id"));
+
+        Page<User> users = userRepository.findAllPage(example, new BasicDBObject(), new PageRequest(0, 10));
+        System.out.println("users->\r\n" + OBJECTMAPPER.writeValueAsString(users));
     }
 }

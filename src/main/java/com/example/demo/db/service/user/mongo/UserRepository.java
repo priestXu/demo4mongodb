@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2019/7/3
  * @description class UserRepository
  */
-public interface UserRepository extends MongoRepository<User, Long> {
+public interface UserRepository extends MongoRepository<User, Long>, UserOperations {
     @Query("{ ?0 : ?1 }")
     List<User> findByDynamicField(String field, Object value);
 
